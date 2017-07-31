@@ -1,0 +1,48 @@
+#! /usr/bin/python
+
+import csv
+import sys
+
+file1 = open(sys.argv[1], 'rt')
+file2 = open(sys.argv[2], 'rt')
+file3 = open(sys.argv[3], 'rt')
+file4 = open(sys.argv[4], 'w')
+
+try:
+    reader1 = list(csv.reader(file1))
+    reader2 = list(csv.reader(file2))
+    reader3 = list(csv.reader(file3))
+    reader4 = csv.writer(file4)
+    for row1 in reader1:
+
+        hardening_found = 'false'
+        arcos_found = 'false'
+        both_not = 'false'
+        count = 0
+
+        for row2 in reader2:
+                count = count + 1
+                if (row1[1] == row2[0] and row1[2] == row2[1]):
+                     arcos_found = 'true'
+                     both_not = 'true'
+                     break
+                elif (arcos_found != 'true' and hardening_found != 'true'):
+                     for row3 in reader3:
+                             if ( row1[0] == row3[0] and row1[2] == row3[1]):
+                                        hardening_found = 'true'
+                                        both_not = 'true'
+                                        break
+                             elif (count == len(reader2) and both_not != 'true'):
+                                        print "Neither in Arcos nor in Hardening, Server IP %s, Username, %s "  %(row1[1], row1[2])
+                                        userlist = []
+                                        userlist.append(row1[1])
+                                        userlist.append(row1[2])
+                                        reader4.writerow(userlist)
+                                        both_not = 'true'
+                                        break
+
+finally:
+    file1.close()
+    file2.close()
+    file3.close()
+    file4.close()
