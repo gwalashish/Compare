@@ -6,23 +6,26 @@ import sys
 file1 = open(sys.argv[1], 'rt')
 file2 = open(sys.argv[2], 'rt')
 file3 = open(sys.argv[3], 'rt')
-file4 = open(sys.argv[4], 'w')
+file4 = open(sys.argv[4], 'rt')
+file5 = open(sys.argv[5], 'w')
 
 try:
     reader1 = list(csv.reader(file1))
     reader2 = list(csv.reader(file2))
     reader3 = list(csv.reader(file3))
-    reader4 = csv.writer(file4)
+	reader4 = list(csv.reader(file4))
+    reader5 = csv.writer(file5)
     for row1 in reader1:
 
         hardening_found = 'false'
+        lam_found = 'false'
         arcos_found = 'false'
         both_not = 'false'
         count = 0
 
         for row2 in reader2:
                 count = count + 1
-                if (row1[1] == row2[0] and row1[2] == row2[1]):
+                if (row2[0] in row1[1] and row1[2] == row2[1]):
                      arcos_found = 'true'
                      both_not = 'true'
                      break
@@ -32,17 +35,24 @@ try:
                                         hardening_found = 'true'
                                         both_not = 'true'
                                         break
-                             elif (count == len(reader2) and both_not != 'true'):
-                                        print "Neither in Arcos nor in Hardening, Server IP %s, Username, %s "  %(row1[1], row1[2])
-                                        userlist = []
-                                        userlist.append(row1[1])
-                                        userlist.append(row1[2])
-                                        reader4.writerow(userlist)
-                                        both_not = 'true'
-                                        break
+                             elif (arcos_found != 'true' and hardening_found != 'true' and lam_found != 'true'):
+										for row4 in reader4:
+												if((row1[0].lower() in row4[4].lower() or row1[0].lower() in row4[5].lower()) and row4[0] in row1[1] and row4[1] == row1[2]):
+														lam_found = 'true'
+														both_not = 'true'
+														break
+												elif (count == len(reader2) and both_not != 'true'):
+                                        				print "Neither in Arcos nor in Hardening, Server IP %s, Username, %s "  %(row1[1], row1[2])
+                                        				userlist = []
+                                        				userlist.append(row1[1])
+                                        				userlist.append(row1[2])
+                                        				reader5.writerow(userlist)
+                                        				both_not = 'true'
+                                        				break
 
 finally:
     file1.close()
     file2.close()
     file3.close()
     file4.close()
+	file5.close()
