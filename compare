@@ -2,6 +2,7 @@
 
 import csv
 import sys
+import math
 
 
 file1 = open(sys.argv[1], 'rt')
