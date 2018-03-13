@@ -1,6 +1,6 @@
 #!/bin/bash
 
 echo "Hello World" 
-echo "${date}" > /var/tmp/test.txt
+echo "$(date)" > /var/tmp/test.txt
 echo "Done Testing" >> /var/tmp/test.txt
-echo "Added a new file"
+echo "Added a new file" >> /var/tmp/test.txt
